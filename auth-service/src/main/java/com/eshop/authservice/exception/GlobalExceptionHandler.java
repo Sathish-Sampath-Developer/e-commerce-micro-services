@@ -12,24 +12,16 @@ import java.util.Date;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // Service exception
-    @ExceptionHandler(ServiceExceptionHandler.class)
-    public ResponseEntity<ErrorResponse> handleAPIException(ServiceExceptionHandler exception,
-                                                            WebRequest webRequest) {
-        ErrorResponse errorDetails = new ErrorResponse(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<ErrorResponse> handleException(ServiceException exception, WebRequest webRequest) {
+        ErrorResponse errorResponse = new ErrorResponse(new Date(), exception.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(errorResponse, exception.getStatus());
     }
 
-    // global exception
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(Exception exception,
-                                                               WebRequest webRequest) {
-        ErrorResponse errorDetails = new ErrorResponse(new Date(), exception.getMessage(),
-                webRequest.getDescription(false));
-
-        System.out.println("----->");
-        return new ResponseEntity<ErrorResponse>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleGlobalException(Exception exception, WebRequest webRequest) {
+        ErrorResponse errorResponse = new ErrorResponse(new Date(), exception.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-}
 
+}

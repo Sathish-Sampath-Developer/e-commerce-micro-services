@@ -2,6 +2,7 @@ package com.eshop.authservice.controller;
 
 import com.eshop.authservice.entity.RoleEntity;
 import com.eshop.authservice.service.RoleService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/private/auth/roles")
 @AllArgsConstructor
+@Tag(name = "Roles Controller", description = "This url for handle roles in  E-Shop.")
 public class RoleController {
 
     @Autowired

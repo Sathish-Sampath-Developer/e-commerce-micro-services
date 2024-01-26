@@ -1,7 +1,7 @@
 package com.eshop.authservice.service.impl;
 
 import com.eshop.authservice.entity.RoleEntity;
-import com.eshop.authservice.exception.ServiceExceptionHandler;
+import com.eshop.authservice.exception.ServiceException;
 import com.eshop.authservice.repository.RoleRepository;
 import com.eshop.authservice.service.RoleService;
 import lombok.AllArgsConstructor;
@@ -32,13 +32,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public RoleEntity getRoleById(Long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new ServiceExceptionHandler(HttpStatus.NOT_FOUND, "Role was not found given id"));
+        return roleRepository.findById(id).orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Role was not found given id"));
     }
 
     @Override
     public RoleEntity updateRole(Long id, RoleEntity roleEntity) {
 
-        RoleEntity role = roleRepository.findById(id).orElseThrow(() -> new ServiceExceptionHandler(HttpStatus.NOT_FOUND, "Role was not found given id"));
+        RoleEntity role = roleRepository.findById(id).orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Role was not found given id"));
         role.setRoleDescription(roleEntity.getRoleDescription());
         role.setName(roleEntity.getName());
 
@@ -47,7 +47,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void deleteRole(Long id) {
-        RoleEntity role = roleRepository.findById(id).orElseThrow(() -> new ServiceExceptionHandler(HttpStatus.NOT_FOUND, "Role was not found given id"));
+        RoleEntity role = roleRepository.findById(id).orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Role was not found given id"));
         roleRepository.delete(role);
     }
 }

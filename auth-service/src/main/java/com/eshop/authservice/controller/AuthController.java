@@ -1,5 +1,6 @@
 package com.eshop.authservice.controller;
 
+import com.eshop.authservice.dto.LoginDto;
 import com.eshop.authservice.dto.RegisterDto;
 import com.eshop.authservice.dto.SuccessResponse;
 import com.eshop.authservice.service.AuthService;
@@ -17,9 +18,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping
-    public ResponseEntity<String> login(){
-        return  new ResponseEntity<>("This is Auth controller", HttpStatus.OK);
+    @PostMapping("/login")
+    public ResponseEntity<SuccessResponse> login(@RequestBody LoginDto loginDto){
+        return  new ResponseEntity<>(authService.login(loginDto),HttpStatus.OK);
     }
 
     @PostMapping("/signup")
