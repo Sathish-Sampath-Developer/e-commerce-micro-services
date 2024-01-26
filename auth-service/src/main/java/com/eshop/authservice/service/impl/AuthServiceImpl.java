@@ -7,8 +7,13 @@ import com.eshop.authservice.exception.ServiceException;
 import com.eshop.authservice.repository.RoleRepository;
 import com.eshop.authservice.repository.UserRepository;
 import com.eshop.authservice.service.AuthService;
+import com.eshop.authservice.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +31,22 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtService jwtService;
+
     @Override
     public SuccessResponse login(LoginDto loginDto) {
-        UserEntity user = userRepository.findByPhoneOrEmail(loginDto.getPhoneOrEmail(), loginDto.getPhoneOrEmail()).orElseThrow(() -> new ServiceException(HttpStatus.BAD_REQUEST, "Email or Phone was in correct!."));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                loginDto.getPhoneOrEmail(), loginDto.getPassword()));
 
-        if (!user.getPassword().equals(loginDto.getPassword())) {
-            throw new ServiceException(HttpStatus.UNAUTHORIZED, "Password was in correct!.");
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new SuccessResponse(true, "Your login was successfully!");
+        String token = jwtService.generateToken(authentication);
+
+        return new SuccessResponse(true, "Your are login was successful!", token);
     }
 
     @Override

@@ -9,9 +9,20 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class SuccessResponse {
     private boolean success;
     private String message;
+    private String token;
+
+    public SuccessResponse(boolean success, String message) {
+        this.success = success;
+        this.message = message;
+    }
+
+    public SuccessResponse(boolean success, String message, String token) {
+        this.success = success;
+        this.message = message;
+        this.token = token;
+    }
 }

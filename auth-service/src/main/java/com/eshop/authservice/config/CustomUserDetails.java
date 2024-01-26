@@ -1,4 +1,4 @@
-package com.eshop.authservice.Security;
+package com.eshop.authservice.config;
 
 import com.eshop.authservice.entity.UserEntity;
 import com.eshop.authservice.repository.UserRepository;
