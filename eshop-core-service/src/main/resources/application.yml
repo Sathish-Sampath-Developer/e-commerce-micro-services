@@ -1,0 +1,19 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: ESHOP-CORE-SERVICE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/e-shop-core
+    username: postgres
+    password: password@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    org:
+      springframework:
+        context: DEBUG

@@ -1,0 +1,13 @@
+server:
+  port: 9002
+
+spring:
+  application:
+    name: AUTH-SERVICE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auth
+    username: postgres
+    password: password@123
+  jpa:
+    hibernate:
+      ddl-auto: update

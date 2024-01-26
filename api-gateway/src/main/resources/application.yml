@@ -1,0 +1,29 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: API-GATEWAY
+  cloud:
+    gateway:
+      routes:
+        - id: AUTH-SERVICE
+          uri: http://localhost:9001
+          predicates:
+            - Path=/api/v1/auth/**
+        - id: ESHOP-CORE-SERVICE
+          uri: http://localhost:9001
+          predicates:
+            - Path=/api/v1/private/products/**
+
+eureka:
+  instance:
+    client:
+      serverUrl:
+        defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

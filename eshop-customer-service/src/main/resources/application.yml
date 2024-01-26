@@ -1,0 +1,21 @@
+server:
+  port: 9003
+
+spring:
+  application:
+    name: ESHOP-CUSTOMER-SERVICE
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/e-shop-customer-service
+    username: postgres
+    password: password@123
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+logging:
+  level:
+    org:
+      springframework:
+        context: DEBUG
