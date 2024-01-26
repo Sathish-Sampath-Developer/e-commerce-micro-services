@@ -9,11 +9,10 @@ import com.eshop.authservice.repository.UserRepository;
 import com.eshop.authservice.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -23,6 +22,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public SuccessResponse login(LoginDto loginDto) {
@@ -50,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
 
         user.setPhone(registerDto.getPhone());
         user.setEmail(registerDto.getEmail());
-        user.setPassword(registerDto.getPassword());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
         if (user.getRoles().isEmpty()) {
             RoleEntity defaultRole = roleRepository.findByName("USER")
@@ -72,4 +74,5 @@ public class AuthServiceImpl implements AuthService {
     public SuccessResponse resetPassword(String passwordResetToken, ResetPasswordDto resetPasswordDto) {
         return null;
     }
+
 }
