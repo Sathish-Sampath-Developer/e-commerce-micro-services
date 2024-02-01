@@ -31,9 +31,9 @@ public class JwtServiceImpl implements JwtService {
         Date expireDate = new Date(currentDate.getTime() + jwtExpiresIn);
 
         return Jwts.builder()
-                .setSubject(phoneOrEmail)
-                .setIssuedAt(new Date())
-                .setExpiration(expireDate)
+                .subject(phoneOrEmail)
+                .issuedAt(new Date())
+                .expiration(expireDate)
                 .signWith(key())
                 .compact();
     }
@@ -46,21 +46,14 @@ public class JwtServiceImpl implements JwtService {
 
     // get phoneOrEmail from Jwt token
     public String getPhoneOrEmail(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        Claims claims = Jwts.parser().setSigningKey(key()).build().parseSignedClaims(token).getPayload();
         return claims.getSubject();
     }
 
     // validate Jwt token
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder()
-                    .setSigningKey(key())
-                    .build()
-                    .parse(token);
+            Jwts.parser().setSigningKey(key()).build().parse(token);
             return true;
         } catch (MalformedJwtException ex) {
             throw new ServiceException(HttpStatus.BAD_REQUEST, "Invalid JWT token");

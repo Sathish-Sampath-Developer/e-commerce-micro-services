@@ -1,5 +1,6 @@
 package com.eshop.authservice.service.impl;
 
+import com.eshop.authservice.Utils.CreatePasswordResetToken;
 import com.eshop.authservice.dto.*;
 import com.eshop.authservice.entity.RoleEntity;
 import com.eshop.authservice.entity.UserEntity;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -36,6 +38,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtService jwtService;
+
+    @Autowired
+    private CreatePasswordResetToken createPasswordResetToken;
 
     @Override
     public SuccessResponse login(LoginDto loginDto) {
@@ -79,12 +84,31 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public SuccessResponse forgotPassword(ForgotPasswordDto forgotPasswordDto) {
-        return null;
+        UserEntity user = userRepository
+                .findByPhoneOrEmail(forgotPasswordDto.getPhoneOrEmail(), forgotPasswordDto.getPhoneOrEmail())
+                .orElseThrow(() -> new ServiceException(HttpStatus.NOT_FOUND, "Email or Phone is incorrect!."));
+
+        String passwordResetToken = createPasswordResetToken.generatePasswordResetToken();
+
+        user.setPasswordResetToken(createPasswordResetToken.hashToken(passwordResetToken));
+        user.setPasswordResetTokenExpiresIn(LocalDateTime.now().plusMinutes(10));
+
+        userRepository.save(user);
+
+        return new SuccessResponse(true, "Password reset token issued successfully!", passwordResetToken);
     }
 
     @Override
     public SuccessResponse resetPassword(String passwordResetToken, ResetPasswordDto resetPasswordDto) {
-        return null;
+        UserEntity user = userRepository.findByPasswordResetTokenAndPasswordResetTokenExpiresInAfter(createPasswordResetToken.hashToken(passwordResetToken), LocalDateTime.now()).orElseThrow(()->new ServiceException(HttpStatus.NOT_FOUND,"Invalid or expired password reset token!."));
+
+        user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
+        user.setPasswordResetToken(null);
+        user.setPasswordResetToken(null);
+
+        userRepository.save(user);
+
+        return new SuccessResponse(true,"Your password was updated successfully!");
     }
 
 }
